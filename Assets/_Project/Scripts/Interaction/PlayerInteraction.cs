@@ -15,6 +15,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private PlayerControls controls;
     private IInteractable currentInteractable;
+    private bool interactionEnabled = true;
 
     private void Awake()
     {
@@ -38,6 +39,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
+        if (!interactionEnabled)
+        {
+            return;
+        }
+
         CheckForInteraction();
 
         if (currentInteractable != null &&
@@ -87,4 +93,15 @@ public class PlayerInteraction : MonoBehaviour
             interactionPrompt.SetActive(false);
         }
     }
+
+    public void SetInteractionEnabled(bool enabled)
+    {
+        interactionEnabled = enabled;
+
+        if (!enabled)
+        {
+            currentInteractable = null;
+            interactionPrompt.SetActive(false);
+        }
+    }    
 }

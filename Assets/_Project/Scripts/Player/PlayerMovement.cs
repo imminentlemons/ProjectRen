@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     private float verticalVelocity;
     private float cameraYaw;
     private float cameraPitch;
+    private bool isInDialogue = false;
 
     private void Awake()
     {
@@ -58,6 +59,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if(isInDialogue)
+        {
+            return;
+        }
+
         HandleMovement();
         HandleCamera();
     }
@@ -105,5 +111,21 @@ public class PlayerMovement : MonoBehaviour
         cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
 
         cameraTarget.rotation = Quaternion.Euler(cameraPitch, cameraYaw, 0f);
+    }
+
+    public void SetDialogueMode(bool active)
+    {
+        isInDialogue = active;
+
+        if (active)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        } else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    
     }
 }
