@@ -4438,6 +4438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7a5acf2521e46f4d8d0c9a5f6153565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueManager
+  renDialogue: {fileID: 11400000, guid: 02767ec77a175734bb484ee975384ad2, type: 2}
   dialoguePanel: {fileID: 53566743}
   choicesContainer: {fileID: 1870413014}
   speakerName: {fileID: 1386039382}

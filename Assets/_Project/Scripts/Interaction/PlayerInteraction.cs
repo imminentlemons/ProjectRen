@@ -16,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
     private PlayerControls controls;
     private IInteractable currentInteractable;
     private bool interactionEnabled = true;
+    private bool waitForInteractRelease = false;
 
     private void Awake()
     {
@@ -40,7 +41,17 @@ public class PlayerInteraction : MonoBehaviour
     private void Update()
     {
         if (!interactionEnabled)
+            return;
+
+        // Wait for E to be released before allowing another interaction
+        if (waitForInteractRelease)
         {
+            if (Keyboard.current != null &&
+                !Keyboard.current.eKey.isPressed)
+            {
+                waitForInteractRelease = false;
+            }
+
             return;
         }
 
@@ -103,5 +114,10 @@ public class PlayerInteraction : MonoBehaviour
             currentInteractable = null;
             interactionPrompt.SetActive(false);
         }
-    }    
+        else
+        {
+            // Require a fresh E press after closing dialogue
+            waitForInteractRelease = true;
+        }
+    }
 }

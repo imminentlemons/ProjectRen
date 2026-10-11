@@ -1,11 +1,14 @@
 
-
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("Dialogue Data")]
+    [SerializeField] private DialogueData renDialogue;
+
     [Header("UI")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private GameObject choicesContainer;
@@ -17,7 +20,10 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private PlayerInteraction playerInteraction;
 
+    private DialogueData currentDialogue;
     private bool dialogueActive;
+    private int currentNodeIndex;
+    private int nodeShownFrame;
 
     private void Start()
     {
@@ -25,80 +31,144 @@ public class DialogueManager : MonoBehaviour
         choicesContainer.SetActive(false);
     }
 
+    // Keep this name so RenInteraction still works!
     public void StartRenDialogue()
     {
-        if (dialogueActive)
+        StartDialogue(renDialogue);
+    }
+
+    public void StartDialogue(DialogueData dialogue)
+    {
+        if (dialogueActive || dialogue == null ||
+            dialogue.nodes == null ||
+            dialogue.nodes.Length == 0)
             return;
 
+        currentDialogue = dialogue;
         dialogueActive = true;
 
         playerMovement.SetDialogueMode(true);
         playerInteraction.SetInteractionEnabled(false);
 
         dialoguePanel.SetActive(true);
-        choicesContainer.SetActive(true);
 
-        speakerName.text = "REN";
-        dialogueText.text = "You're late.";
-
-        SetChoice(0, "Late for what?", 0);
-        SetChoice(1, "Miss me that much?", 1);
-        SetChoice(2, "Sorry, got held up.", 2);
+        ShowNode(0);
     }
 
-    private void SetChoice(int index, string text, int choice)
+    private void ShowNode(int index)
     {
-        Button button = choiceButtons[index];
-
-        button.gameObject.SetActive(true);
-        button.GetComponentInChildren<TMP_Text>().text = text;
-
-        button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(() => SelectChoice(choice));
-    }
-
-    private void SelectChoice(int choice)
-    {
-        switch (choice)
+        if (index < 0 ||
+            index >= currentDialogue.nodes.Length)
         {
-            case 0:
-                dialogueText.text =
-                    "Ren glances up. \"You're asking me?\"";
-                break;
-
-            case 1:
-                dialogueText.text =
-                    "\"Don't flatter yourself.\" He looks away.";
-                break;
-
-            case 2:
-                dialogueText.text =
-                    "\"Didn't ask for an excuse.\"";
-                break;
+            EndDialogue();
+            return;
         }
 
-        choicesContainer.SetActive(false);
+        currentNodeIndex = index;
+        nodeShownFrame = Time.frameCount;
+
+        DialogueNode node =
+            currentDialogue.nodes[currentNodeIndex];
+
+        speakerName.text = node.speakerName;
+        dialogueText.text = node.dialogueText;
+
+        // Hide previous choices
+        foreach (Button button in choiceButtons)
+            button.gameObject.SetActive(false);
+
+        int choiceCount = node.choices == null
+            ? 0
+            : node.choices.Length;
+
+        if (choiceCount == 0)
+        {
+            choicesContainer.SetActive(false);
+            return;
+        }
+
+        choicesContainer.SetActive(true);
+
+        int visibleCount = Mathf.Min(
+            choiceCount, choiceButtons.Length);
+
+        for (int i = 0; i < visibleCount; i++)
+        {
+            DialogueChoice choice = node.choices[i];
+            Button button = choiceButtons[i];
+
+            button.gameObject.SetActive(true);
+
+            button.GetComponentInChildren<TMP_Text>()
+                .text = choice.responseText;
+
+            int nextIndex = choice.nextNodeIndex;
+
+            button.onClick.RemoveAllListeners();
+
+            button.onClick.AddListener(() =>
+                SelectChoice(nextIndex));
+        }
+
+        if (choiceCount > choiceButtons.Length)
+        {
+            Debug.LogWarning(
+                "More dialogue choices than UI buttons!");
+        }
+    }
+
+    private void SelectChoice(int nextNodeIndex)
+    {
+        if (!dialogueActive)
+            return;
+
+        if (nextNodeIndex == -1)
+        {
+            EndDialogue();
+            return;
+        }
+
+        ShowNode(nextNodeIndex);
+    }
+
+    private void Update()
+    {
+        if (!dialogueActive)
+            return;
+
+        // Don't close dialogue on the same frame
+        // that a choice button was clicked.
+        if (Time.frameCount == nodeShownFrame)
+            return;
+
+        // Wait for a response when choices are visible.
+        if (choicesContainer.activeSelf)
+            return;
+
+        bool ePressed = Keyboard.current != null &&
+            Keyboard.current.eKey.wasPressedThisFrame;
+
+        bool mouseClicked = Mouse.current != null &&
+            Mouse.current.leftButton.wasPressedThisFrame;
+
+        if (ePressed || mouseClicked)
+        {
+            EndDialogue();
+        }
     }
 
     public void EndDialogue()
     {
+        if (!dialogueActive)
+            return;
+
         dialogueActive = false;
+        currentDialogue = null;
 
         dialoguePanel.SetActive(false);
         choicesContainer.SetActive(false);
 
         playerMovement.SetDialogueMode(false);
         playerInteraction.SetInteractionEnabled(true);
-    }
-
-    private void Update()
-    {
-        if (dialogueActive &&
-            !choicesContainer.activeSelf &&
-            UnityEngine.InputSystem.Keyboard.current != null &&
-            UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            EndDialogue();
-        }
     }
 }

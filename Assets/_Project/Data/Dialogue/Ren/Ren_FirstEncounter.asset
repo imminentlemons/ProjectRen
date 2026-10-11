@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3569a3d4c58cc06418458b4d72bf1bc7, type: 3}
+  m_Name: Ren_FirstEncounter
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  nodes:
+  - speakerName: REN
+    dialogueText: You're late.
+    choices:
+    - responseText: Late for what?
+      nextNodeIndex: 1
+    - responseText: Miss me that much?
+      nextNodeIndex: 2
+    - responseText: Sorry, got held up.
+      nextNodeIndex: 3
+  - speakerName: REN
+    dialogueText: Ren glances up from the stack of records. "You're asking me?"
+    choices: []
+  - speakerName: REN
+    dialogueText: '"Don''t flatter yourself." He looks away, although the corner
+      of his mouth twitches.'
+    choices: []
+  - speakerName: REN
+    dialogueText: '"Didn''t ask for an excuse." He slides another record into its
+      sleeve.'
+    choices: []
