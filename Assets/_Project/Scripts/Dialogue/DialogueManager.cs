@@ -102,12 +102,12 @@ public class DialogueManager : MonoBehaviour
             button.GetComponentInChildren<TMP_Text>()
                 .text = choice.responseText;
 
-            int nextIndex = choice.nextNodeIndex;
+            DialogueChoice selectedChoice = choice;
 
             button.onClick.RemoveAllListeners();
 
             button.onClick.AddListener(() =>
-                SelectChoice(nextIndex));
+                SelectChoice(selectedChoice));
         }
 
         if (choiceCount > choiceButtons.Length)
@@ -117,19 +117,36 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void SelectChoice(int nextNodeIndex)
-    {
-        if (!dialogueActive)
-            return;
 
-        if (nextNodeIndex == -1)
+    private void SelectChoice(DialogueChoice choice)
+    {
+        RelationshipManager relationship =
+            RelationshipManager.Instance;
+
+        if (relationship != null)
         {
-            EndDialogue();
-            return;
+            relationship.ModifyRelationship(
+                choice.familiarityChange,
+                choice.trustChange,
+                choice.comfortChange
+            );
+
+            if (!string.IsNullOrEmpty(choice.flagToSet))
+            {
+                relationship.SetFlag(choice.flagToSet);
+            }
         }
 
-        ShowNode(nextNodeIndex);
+        if (choice.nextNodeIndex == -1)
+        {
+            EndDialogue();
+        }
+        else
+        {
+            ShowNode(choice.nextNodeIndex);
+        }
     }
+
 
     private void Update()
     {
@@ -151,10 +168,22 @@ public class DialogueManager : MonoBehaviour
         bool mouseClicked = Mouse.current != null &&
             Mouse.current.leftButton.wasPressedThisFrame;
 
+
         if (ePressed || mouseClicked)
         {
-            EndDialogue();
+            DialogueNode currentNode =
+                currentDialogue.nodes[currentNodeIndex];
+
+            if (currentNode.nextNodeIndex >= 0)
+            {
+                ShowNode(currentNode.nextNodeIndex);
+            }
+            else
+            {
+                EndDialogue();
+            }
         }
+
     }
 
     public void EndDialogue()

@@ -14,22 +14,51 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   nodes:
   - speakerName: REN
-    dialogueText: You're late.
+    dialogueText: '"You''re late."'
+    nextNodeIndex: -1
     choices:
     - responseText: Late for what?
       nextNodeIndex: 1
+      familiarityChange: 1
+      trustChange: 0
+      comfortChange: 0
+      flagToSet: AskedWhyLate
     - responseText: Miss me that much?
       nextNodeIndex: 2
+      familiarityChange: 2
+      trustChange: 0
+      comfortChange: 1
+      flagToSet: TeasedRen
     - responseText: Sorry, got held up.
       nextNodeIndex: 3
+      familiarityChange: 1
+      trustChange: 1
+      comfortChange: 0
+      flagToSet: ApologizedToRen
   - speakerName: REN
     dialogueText: Ren glances up from the stack of records. "You're asking me?"
+    nextNodeIndex: 4
     choices: []
   - speakerName: REN
     dialogueText: '"Don''t flatter yourself." He looks away, although the corner
       of his mouth twitches.'
+    nextNodeIndex: 4
     choices: []
   - speakerName: REN
     dialogueText: '"Didn''t ask for an excuse." He slides another record into its
       sleeve.'
+    nextNodeIndex: 4
+    choices: []
+  - speakerName: REN
+    dialogueText: '"You buying something, or just standing there?"'
+    nextNodeIndex: 5
+    choices: []
+  - speakerName: REN
+    dialogueText: '"New arrivals are over there. Try not to put anything back in
+      the wrong section."'
+    nextNodeIndex: 6
+    choices: []
+  - speakerName: REN
+    dialogueText: '"And shut the door properly on your way out. It sticks."'
+    nextNodeIndex: -1
     choices: []
