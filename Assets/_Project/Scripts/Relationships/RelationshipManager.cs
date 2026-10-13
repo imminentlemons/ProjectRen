@@ -56,4 +56,37 @@ public class RelationshipManager : MonoBehaviour
     {
         return memoryFlags.Contains(flag);
     }
+
+
+    public SaveData GetSaveData()
+    {
+        SaveData data = new SaveData();
+
+        data.familiarity = familiarity;
+        data.trust = trust;
+        data.comfort = comfort;
+
+        data.memoryFlags = new List<string>(memoryFlags);
+
+        return data;
+    }
+
+
+    public void LoadSaveData(SaveData data)
+    {
+        if (data == null)
+            return;
+
+        familiarity = Mathf.Clamp(data.familiarity, 0, 100);
+        trust = Mathf.Clamp(data.trust, 0, 100);
+        comfort = Mathf.Clamp(data.comfort, 0, 100);
+
+        memoryFlags = data.memoryFlags != null
+            ? new HashSet<string>(data.memoryFlags)
+            : new HashSet<string>();
+
+        Debug.Log("Ren's relationship data loaded!");
+    }
+
+
 }

@@ -43,5 +43,11 @@ public class DialogueChoice
 
     [Header("Memory")]
     public string flagToSet;
+
+
+    [Header("Conditions")]
+    public string requiredFlag;
+    public string forbiddenFlag;
+
 }
 

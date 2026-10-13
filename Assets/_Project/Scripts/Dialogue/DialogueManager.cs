@@ -55,6 +55,29 @@ public class DialogueManager : MonoBehaviour
         ShowNode(0);
     }
 
+
+    private bool CanShowChoice(DialogueChoice choice)
+    {
+        RelationshipManager relationship =
+            RelationshipManager.Instance;
+
+        if (!string.IsNullOrEmpty(choice.requiredFlag))
+        {
+            if (relationship == null ||
+                !relationship.HasFlag(choice.requiredFlag))
+                return false;
+        }
+
+        if (!string.IsNullOrEmpty(choice.forbiddenFlag))
+        {
+            if (relationship != null &&
+                relationship.HasFlag(choice.forbiddenFlag))
+                return false;
+        }
+
+        return true;
+    }
+
     private void ShowNode(int index)
     {
         if (index < 0 ||
@@ -77,44 +100,41 @@ public class DialogueManager : MonoBehaviour
         foreach (Button button in choiceButtons)
             button.gameObject.SetActive(false);
 
-        int choiceCount = node.choices == null
-            ? 0
-            : node.choices.Length;
 
-        if (choiceCount == 0)
+        int visibleCount = 0;
+
+        if (node.choices != null)
         {
-            choicesContainer.SetActive(false);
-            return;
+            foreach (DialogueChoice choice in node.choices)
+            {
+                if (!CanShowChoice(choice))
+                    continue;
+
+                if (visibleCount >= choiceButtons.Length)
+                {
+                    Debug.LogWarning(
+                        "More available dialogue choices than UI buttons!");
+                    break;
+                }
+
+                Button button = choiceButtons[visibleCount];
+                button.gameObject.SetActive(true);
+
+                button.GetComponentInChildren<TMP_Text>().text =
+                    choice.responseText;
+
+                DialogueChoice selectedChoice = choice;
+
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() =>
+                    SelectChoice(selectedChoice));
+
+                visibleCount++;
+            }
         }
 
-        choicesContainer.SetActive(true);
+        choicesContainer.SetActive(visibleCount > 0);
 
-        int visibleCount = Mathf.Min(
-            choiceCount, choiceButtons.Length);
-
-        for (int i = 0; i < visibleCount; i++)
-        {
-            DialogueChoice choice = node.choices[i];
-            Button button = choiceButtons[i];
-
-            button.gameObject.SetActive(true);
-
-            button.GetComponentInChildren<TMP_Text>()
-                .text = choice.responseText;
-
-            DialogueChoice selectedChoice = choice;
-
-            button.onClick.RemoveAllListeners();
-
-            button.onClick.AddListener(() =>
-                SelectChoice(selectedChoice));
-        }
-
-        if (choiceCount > choiceButtons.Length)
-        {
-            Debug.LogWarning(
-                "More dialogue choices than UI buttons!");
-        }
     }
 
 

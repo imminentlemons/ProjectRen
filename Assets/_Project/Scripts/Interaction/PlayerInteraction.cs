@@ -64,32 +64,36 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
+
     private void CheckForInteraction()
     {
         currentInteractable = null;
 
-        Ray ray = new Ray(
-            playerCamera.transform.position,
-            playerCamera.transform.forward
+        Collider[] nearbyColliders = Physics.OverlapSphere(
+            transform.position,
+            interactionDistance,
+            interactionLayers
         );
 
-        if (Physics.Raycast(ray, out RaycastHit hit,
-    20f, interactionLayers))
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider col in nearbyColliders)
         {
             IInteractable interactable =
-                hit.collider.GetComponentInParent<IInteractable>();
+                col.GetComponentInParent<IInteractable>();
 
-            if (interactable != null)
+            if (interactable == null)
+                continue;
+
+            float distance = Vector3.Distance(
+                transform.position,
+                col.ClosestPoint(transform.position)
+            );
+
+            if (distance < closestDistance)
             {
-                float distance = Vector3.Distance(
-                    transform.position,
-                    hit.collider.ClosestPoint(transform.position)
-                );
-
-                if (distance <= interactionDistance)
-                {
-                    currentInteractable = interactable;
-                }
+                closestDistance = distance;
+                currentInteractable = interactable;
             }
         }
 
@@ -104,6 +108,7 @@ public class PlayerInteraction : MonoBehaviour
             interactionPrompt.SetActive(false);
         }
     }
+
 
     public void SetInteractionEnabled(bool enabled)
     {

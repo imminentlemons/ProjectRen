@@ -23,18 +23,24 @@ MonoBehaviour:
       trustChange: 0
       comfortChange: 0
       flagToSet: AskedWhyLate
+      requiredFlag: 
+      forbiddenFlag: 
     - responseText: Miss me that much?
       nextNodeIndex: 2
       familiarityChange: 2
       trustChange: 0
       comfortChange: 1
       flagToSet: TeasedRen
+      requiredFlag: 
+      forbiddenFlag: 
     - responseText: Sorry, got held up.
       nextNodeIndex: 3
       familiarityChange: 1
       trustChange: 1
       comfortChange: 0
       flagToSet: ApologizedToRen
+      requiredFlag: 
+      forbiddenFlag: 
   - speakerName: REN
     dialogueText: Ren glances up from the stack of records. "You're asking me?"
     nextNodeIndex: 4

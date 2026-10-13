@@ -10,6 +10,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float rotationSpeed = 12f;
     [SerializeField] private float gravity = -9.81f;
 
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private float animationSmoothTime = 0.1f;
+
+    private static readonly int SpeedParameter = Animator.StringToHash("Speed");
+
     [Header("Camera")]
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private float mouseSensitivity = 0.15f;
@@ -30,6 +36,17 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        if (animator == null)
+        {
+            animator = GetComponentInChildren<Animator>();
+        }
+
+        if (animator != null)
+        {
+            // The CharacterController owns movement; animation only poses the model.
+            animator.applyRootMotion = false;
+        }
+
         controls = new PlayerControls();
 
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
@@ -61,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if(isInDialogue)
         {
+            UpdateAnimation(0f);
             return;
         }
 
@@ -101,6 +119,21 @@ public class PlayerMovement : MonoBehaviour
         Vector3 velocity = direction * moveSpeed + Vector3.up * verticalVelocity;
 
         controller.Move(velocity * Time.deltaTime);
+
+        Vector3 horizontalVelocity = controller.velocity;
+        horizontalVelocity.y = 0f;
+        float normalizedSpeed = moveSpeed > 0f
+            ? Mathf.Clamp01(horizontalVelocity.magnitude / moveSpeed)
+            : 0f;
+        UpdateAnimation(normalizedSpeed);
+    }
+
+    private void UpdateAnimation(float normalizedSpeed)
+    {
+        if (animator != null && animator.isActiveAndEnabled && animator.runtimeAnimatorController != null)
+        {
+            animator.SetFloat(SpeedParameter, normalizedSpeed, animationSmoothTime, Time.deltaTime);
+        }
     }
 
     private void HandleCamera()
