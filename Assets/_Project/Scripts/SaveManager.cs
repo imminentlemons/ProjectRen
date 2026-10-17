@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 public class SaveManager : MonoBehaviour
 {
+    [Header("Loading")]
+    [SerializeField] private bool loadOnStart = true;
+
     private string savePath;
 
     private void Awake()
@@ -14,6 +17,15 @@ public class SaveManager : MonoBehaviour
             Application.persistentDataPath,
             "save.json"
         );
+    }
+
+    private void Start()
+    {
+        // All Awake methods have run, including RelationshipManager's setup.
+        if (loadOnStart && File.Exists(savePath))
+        {
+            LoadGame();
+        }
     }
 
 
@@ -62,17 +74,34 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        string json = File.ReadAllText(savePath);
-
-        SaveData data =
-            JsonUtility.FromJson<SaveData>(json);
-
         RelationshipManager relationship =
             RelationshipManager.Instance;
 
-        if (relationship != null)
+        if (relationship == null)
         {
+            Debug.LogError("RelationshipManager not found!");
+            return;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(savePath);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+
+            if (data == null)
+            {
+                Debug.LogWarning("Save file is empty. Current progress was kept.");
+                return;
+            }
+
             relationship.LoadSaveData(data);
+        }
+        catch (System.Exception exception) when (
+            exception is IOException ||
+            exception is System.UnauthorizedAccessException ||
+            exception is System.ArgumentException)
+        {
+            Debug.LogWarning("Could not load save. Current progress was kept. " + exception.Message);
         }
     }
 }

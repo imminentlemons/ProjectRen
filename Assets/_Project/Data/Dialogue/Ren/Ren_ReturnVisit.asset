@@ -17,11 +17,23 @@ MonoBehaviour:
     dialogueText: '"Back again?"'
     nextNodeIndex: 1
     choices: []
-  - speakerName: 
+  - speakerName: REN
     dialogueText: '"You know there are other record stores, right?"'
     nextNodeIndex: 2
     choices: []
-  - speakerName: 
+  - speakerName: REN
     dialogueText: '"Anyway. New arrivals are over there."'
     nextNodeIndex: -1
+    choices: []
+  - speakerName: REN
+    dialogueText: "\u201CBack again? Going to ask if I missed you?\u201D"
+    nextNodeIndex: 1
+    choices: []
+  - speakerName: REN
+    dialogueText: "\u201CBefore you ask\u2014no, you\u2019re not late today.\u201D"
+    nextNodeIndex: 1
+    choices: []
+  - speakerName: REN
+    dialogueText: "\u201CBack again? You can skip the apology this time.\u201D"
+    nextNodeIndex: 1
     choices: []

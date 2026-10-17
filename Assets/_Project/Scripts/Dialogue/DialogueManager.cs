@@ -37,7 +37,7 @@ public class DialogueManager : MonoBehaviour
         StartDialogue(renDialogue);
     }
 
-    public void StartDialogue(DialogueData dialogue)
+    public void StartDialogue(DialogueData dialogue, int startNodeIndex = 0)
     {
         if (dialogueActive || dialogue == null ||
             dialogue.nodes == null ||
@@ -52,7 +52,7 @@ public class DialogueManager : MonoBehaviour
 
         dialoguePanel.SetActive(true);
 
-        ShowNode(0);
+        ShowNode(startNodeIndex);
     }
 
 

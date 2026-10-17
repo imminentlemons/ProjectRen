@@ -23,14 +23,27 @@ public class RenInteraction : MonoBehaviour, IInteractable
 
         if (relationship.HasFlag("HasMetRen"))
         {
-            dialogueManager.StartDialogue(returnVisit);
+            int openingNode = 0;
+
+            if (relationship.HasFlag("TeasedRen"))
+            {
+                openingNode = 3;
+            }
+            else if (relationship.HasFlag("AskedWhyLate"))
+            {
+                openingNode = 4;
+            }
+            else if (relationship.HasFlag("ApologizedToRen"))
+            {
+                openingNode = 5;
+            }
+
+            dialogueManager.StartDialogue(returnVisit, openingNode);
         }
+
         else
         {
             dialogueManager.StartDialogue(firstEncounter);
-
-            // Temporary approach: remembers the player
-            // as soon as the conversation begins.
             relationship.SetFlag("HasMetRen");
         }
     }
