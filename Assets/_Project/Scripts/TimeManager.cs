@@ -71,6 +71,23 @@ public class TimeManager : MonoBehaviour
         return true;
     }
 
+    public IReadOnlyList<ScheduledBlock> GetTodaySchedule()
+    {
+        List<ScheduledBlock> today = new();
+
+        foreach (ScheduledBlock block in scheduledBlocks)
+        {
+            if (block.weekday == CurrentWeekday)
+            {
+                today.Add(block);
+            }
+        }
+
+        today.Sort((a, b) => a.startHour.CompareTo(b.startHour));
+
+        return today.AsReadOnly();
+    }
+
     public bool StartActivity(int duration)
     {
         if(!CanStartActivity(duration))
@@ -196,6 +213,20 @@ public class TimeManager : MonoBehaviour
         {
             WaitOneHour();
         }
+
+
+        if (Keyboard.current.digit6Key.wasPressedThisFrame)
+        {
+            var today = GetTodaySchedule();
+
+            Debug.Log($"Schedule for {CurrentWeekday}: {today.Count} activities");
+
+            foreach (ScheduledBlock block in today)
+            {
+                Debug.Log($"{block.activityName}: {block.startHour}:00 - {block.endHour}:00");
+            }
+        }
+
     }
 
 }
