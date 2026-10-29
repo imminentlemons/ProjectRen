@@ -12,21 +12,19 @@ public class RecordShelfInteractable : MonoBehaviour, IInteractable
         "Glass Echo - Rain on Tape"
     };
 
-    private int currentRecordIndex = 0;
+    [Header("UI")]
+    [SerializeField] private RecordBrowseUI browseUI;
 
     public string InteractionPrompt => "Browse Records";
 
     public void Interact()
     {
-        if (records == null || records.Length == 0)
+        if (browseUI == null)
         {
-            Debug.Log("This shelf is empty.");
+            Debug.LogWarning("Record Browse UI not assigned!");
             return;
         }
 
-        Debug.Log($"Browsing: {records[currentRecordIndex]}");
-
-        currentRecordIndex =
-            (currentRecordIndex + 1) % records.Length;
+        browseUI.Open(records);
     }
 }
