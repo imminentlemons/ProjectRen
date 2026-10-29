@@ -7,6 +7,15 @@ public class ScheduleToggle : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private GameObject schedulePanel;
 
+
+    [Header("Gameplay Controls")]
+    [SerializeField] private MonoBehaviour[] controlsToPause;
+
+    private bool[] previousStates;
+    private CursorLockMode previousCursorLock;
+    private bool previousCursorVisible;
+
+
     private void Start()
     {
         if (schedulePanel != null)
@@ -26,10 +35,43 @@ public class ScheduleToggle : MonoBehaviour
         }
     }
 
+
     private void ToggleSchedule()
     {
-        bool isOpen = schedulePanel.activeSelf;
+        bool opening = !schedulePanel.activeSelf;
 
-        schedulePanel.SetActive(!isOpen);
+        if (opening)
+        {
+            previousStates = new bool[controlsToPause.Length];
+
+            for (int i = 0; i < controlsToPause.Length; i++)
+            {
+                if (controlsToPause[i] == null)
+                    continue;
+
+                previousStates[i] = controlsToPause[i].enabled;
+                controlsToPause[i].enabled = false;
+            }
+
+            previousCursorLock = Cursor.lockState;
+            previousCursorVisible = Cursor.visible;
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            for (int i = 0; i < controlsToPause.Length; i++)
+            {
+                if (controlsToPause[i] != null)
+                    controlsToPause[i].enabled = previousStates[i];
+            }
+
+            Cursor.lockState = previousCursorLock;
+            Cursor.visible = previousCursorVisible;
+        }
+
+        schedulePanel.SetActive(opening);
     }
+
 }
