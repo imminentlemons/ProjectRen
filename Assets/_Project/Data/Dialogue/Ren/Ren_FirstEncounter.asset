@@ -26,7 +26,7 @@ MonoBehaviour:
       requiredFlag: 
       forbiddenFlag: 
     - responseText: Miss me that much?
-      nextNodeIndex: 4
+      nextNodeIndex: 3
       familiarityChange: 2
       trustChange: 0
       comfortChange: 1
@@ -34,7 +34,7 @@ MonoBehaviour:
       requiredFlag: 
       forbiddenFlag: 
     - responseText: Sorry, got held up.
-      nextNodeIndex: 3
+      nextNodeIndex: 6
       familiarityChange: 1
       trustChange: 1
       comfortChange: 0
@@ -51,7 +51,7 @@ MonoBehaviour:
     choices: []
   - speakerName: REN
     dialogueText: '"You always introduce yourself like that?"'
-    nextNodeIndex: 4
+    nextNodeIndex: 5
     choices: []
   - speakerName: REN
     dialogueText: '"New arrivals. You missed the rush."'
@@ -59,11 +59,11 @@ MonoBehaviour:
     choices: []
   - speakerName: REN
     dialogueText: "\"For the records. You\u2019re late for the records.\""
-    nextNodeIndex: 6
+    nextNodeIndex: 7
     choices: []
   - speakerName: REN
     dialogueText: "\"You don\u2019t have to apologize.\""
-    nextNodeIndex: 7
+    nextNodeIndex: 4
     choices: []
   - speakerName: REN
     dialogueText: "\"Anything you\u2019re looking for? \""

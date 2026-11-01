@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3569a3d4c58cc06418458b4d72bf1bc7, type: 3}
+  m_Name: BulletinBoardInteraction
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  nodes:
+  - speakerName: BULLETIN BOARD
+    dialogueText: A faded concert flyer catches your eye. A local band is playing
+      this Friday at a nearby venue.
+    nextNodeIndex: -1
+    choices: []
